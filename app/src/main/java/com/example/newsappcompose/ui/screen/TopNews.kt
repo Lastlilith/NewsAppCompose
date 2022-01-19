@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.newsappcompose.MockData
+import com.example.newsappcompose.MockData.getTimeAgo
 import com.example.newsappcompose.NewsData
 import com.example.newsappcompose.R
 
@@ -25,7 +26,7 @@ fun TopNews(navController: NavController) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Top News", fontWeight = FontWeight.SemiBold)
         LazyColumn {
-            items(MockData.topNewsList) {newsData ->
+            items(MockData.topNewsList) { newsData ->
                 TopNewsItem(newsData = newsData, onNewsClick = {
                     navController.navigate("Detail/${newsData.id}")
                 })
@@ -35,11 +36,12 @@ fun TopNews(navController: NavController) {
 }
 
 @Composable
-fun TopNewsItem(newsData: NewsData, onNewsClick: ()-> Unit = {}) {
+fun TopNewsItem(newsData: NewsData, onNewsClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .height(200.dp)
-            .padding(8.dp).clickable {
+            .padding(8.dp)
+            .clickable {
                 onNewsClick()
             }
     ) {
@@ -53,7 +55,11 @@ fun TopNewsItem(newsData: NewsData, onNewsClick: ()-> Unit = {}) {
                 .padding(top = 16.dp, start = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = newsData.publishedAt, color = Color.White, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = MockData.stringToDate(newsData.publishedAt).getTimeAgo(),
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
+            )
             Spacer(modifier = Modifier.height(80.dp))
             Text(text = newsData.title, color = Color.White, fontWeight = FontWeight.SemiBold)
 
@@ -64,12 +70,14 @@ fun TopNewsItem(newsData: NewsData, onNewsClick: ()-> Unit = {}) {
 @Composable
 @Preview(showBackground = true)
 fun TopNewsPreview() {
-    TopNewsItem(newsData = NewsData(
-        2,
-        R.drawable.namita,
-        author = "Namita Singh",
-        title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
-        description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
-        publishedAt = "2021-11-04T04:42:40Z"
-    ))
+    TopNewsItem(
+        newsData = NewsData(
+            2,
+            R.drawable.namita,
+            author = "Namita Singh",
+            title = "Cleo Smith news — live: Kidnap suspect 'in hospital again' as 'hard police grind' credited for breakthrough - The Independent",
+            description = "The suspected kidnapper of four-year-old Cleo Smith has been treated in hospital for a second time amid reports he was “attacked” while in custody.",
+            publishedAt = "2021-11-04T04:42:40Z"
+        )
+    )
 }
