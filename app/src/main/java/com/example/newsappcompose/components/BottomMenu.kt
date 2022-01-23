@@ -18,7 +18,9 @@ fun BottomMenu(navController: NavController) {
     val menuItem =
         listOf(BottomMenuScreen.TopNews, BottomMenuScreen.Categories, BottomMenuScreen.Sources)
 
-    BottomNavigation(contentColor = colorResource(id = R.color.white)) {
+    BottomNavigation(contentColor = colorResource(id = R.color.white), backgroundColor = colorResource(
+        id = R.color.purple_700
+    )) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         menuItem.forEach {
