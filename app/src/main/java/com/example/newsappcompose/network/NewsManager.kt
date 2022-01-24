@@ -13,9 +13,9 @@ class NewsManager {
 
     private val _newsResponse = mutableStateOf(TopNewsResponse())
     val newsResponse: State<TopNewsResponse>
-    @Composable get() = remember {
-        _newsResponse
-    }
+        @Composable get() = remember {
+            _newsResponse
+        }
 
     val sourceName = mutableStateOf("abc-news")
 
@@ -44,7 +44,7 @@ class NewsManager {
                 call: Call<TopNewsResponse>,
                 response: Response<TopNewsResponse>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     Log.d("news", "${_newsResponse.value}")
                     _newsResponse.value = response.body()!!
                 } else {
@@ -66,7 +66,7 @@ class NewsManager {
                 call: Call<TopNewsResponse>,
                 response: Response<TopNewsResponse>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     Log.d("category", "${_getArticleByCategory.value}")
                     _getArticleByCategory.value = response.body()!!
                 } else {
@@ -82,13 +82,13 @@ class NewsManager {
     }
 
     fun getArticlesBySource() {
-        val service = Api.retrofitService.getArticlesByCategory(sourceName.value)
+        val service = Api.retrofitService.getArticlesBySources(sourceName.value)
         service.enqueue(object : Callback<TopNewsResponse> {
             override fun onResponse(
                 call: Call<TopNewsResponse>,
                 response: Response<TopNewsResponse>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     _getArticleBySource.value = response.body()!!
                     Log.d("category", "${_getArticleBySource.value}")
                 } else {
