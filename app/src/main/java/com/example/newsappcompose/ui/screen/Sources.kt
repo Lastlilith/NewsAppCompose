@@ -24,11 +24,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.newsappcompose.R
+import com.example.newsappcompose.components.ErrorUi
+import com.example.newsappcompose.components.LoadingUi
 import com.example.newsappcompose.models.TopNewsArticle
 import com.example.newsappcompose.ui.MainViewModel
 
 @Composable
-fun Sources(viewModel: MainViewModel) {
+fun Sources(
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
 
     val items = listOf(
         "TechCrunch" to "techcrunch",
@@ -64,9 +70,19 @@ fun Sources(viewModel: MainViewModel) {
             }
         )
     }) {
-        viewModel.getArticleBySource()
-        val articles = viewModel.getArticleBySource.collectAsState().value
-        SourceContent(articles = articles.articles ?: listOf())
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                viewModel.getArticleBySource()
+                val articles = viewModel.getArticleBySource.collectAsState().value
+                SourceContent(articles = articles.articles ?: listOf())
+            }
+        }
     }
 }
 

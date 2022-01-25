@@ -20,6 +20,8 @@ import androidx.navigation.NavController
 import com.example.newsappcompose.MockData
 import com.example.newsappcompose.MockData.getTimeAgo
 import com.example.newsappcompose.R
+import com.example.newsappcompose.components.ErrorUi
+import com.example.newsappcompose.components.LoadingUi
 import com.example.newsappcompose.components.SearchBar
 import com.example.newsappcompose.models.TopNewsArticle
 import com.example.newsappcompose.ui.MainViewModel
@@ -30,7 +32,9 @@ fun TopNews(
     navController: NavController,
     articles: List<TopNewsArticle>,
     query: MutableState<String>,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -45,11 +49,21 @@ fun TopNews(
             resultsList.addAll(articles)
         }
 
-        LazyColumn {
-            items(articles.size) { index ->
-                TopNewsItem(
-                    article = resultsList[index],
-                    onNewsClick = { navController.navigate("Detail/$index") })
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                LazyColumn {
+                    items(articles.size) { index ->
+                        TopNewsItem(
+                            article = resultsList[index],
+                            onNewsClick = { navController.navigate("Detail/$index") })
+                    }
+                }
             }
         }
     }

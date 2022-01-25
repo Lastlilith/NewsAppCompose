@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,22 +23,40 @@ import androidx.compose.ui.unit.dp
 import com.example.newsappcompose.MockData
 import com.example.newsappcompose.MockData.getTimeAgo
 import com.example.newsappcompose.R
+import com.example.newsappcompose.components.ErrorUi
+import com.example.newsappcompose.components.LoadingUi
 import com.example.newsappcompose.models.TopNewsArticle
 import com.example.newsappcompose.models.getAllArticleCategories
 import com.example.newsappcompose.ui.MainViewModel
 import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel) {
+fun Categories(
+    onFetchCategory: (String) -> Unit = {},
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
     val tabItems = getAllArticleCategories()
     Column {
-        LazyRow {
-            items(tabItems.size) {
-                val category = tabItems[it]
-                CategoryTab(
-                    category = category.categoryName, onFetchCategory = onFetchCategory,
-                    isSelected = viewModel.selectedCategory.collectAsState().value == category
-                )
+
+        when {
+            isLoading.value -> {
+                LoadingUi()
+            }
+            isError.value -> {
+                ErrorUi()
+            }
+            else -> {
+                LazyRow {
+                    items(tabItems.size) {
+                        val category = tabItems[it]
+                        CategoryTab(
+                            category = category.categoryName, onFetchCategory = onFetchCategory,
+                            isSelected = viewModel.selectedCategory.collectAsState().value == category
+                        )
+                    }
+                }
             }
         }
         ArticleContent(
