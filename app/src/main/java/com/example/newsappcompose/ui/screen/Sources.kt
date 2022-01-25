@@ -25,10 +25,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.newsappcompose.R
 import com.example.newsappcompose.models.TopNewsArticle
-import com.example.newsappcompose.network.NewsManager
+import com.example.newsappcompose.ui.MainViewModel
 
 @Composable
-fun Sources(newsManager: NewsManager) {
+fun Sources(viewModel: MainViewModel) {
 
     val items = listOf(
         "TechCrunch" to "techcrunch",
@@ -40,7 +40,7 @@ fun Sources(newsManager: NewsManager) {
     )
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = "${newsManager.sourceName.value} source") },
+        TopAppBar(title = { Text(text = "${viewModel.sourceName.collectAsState().value} source") },
             actions = {
                 var menuExpanded by remember { mutableStateOf(false) }
                 IconButton(onClick = { menuExpanded = true }) {
@@ -52,7 +52,8 @@ fun Sources(newsManager: NewsManager) {
                     }) {
                         items.forEach {
                             DropdownMenuItem(onClick = {
-                                newsManager.sourceName.value = it.second
+                                viewModel.sourceName.value = it.second
+                                viewModel.getArticleBySource()
                                 menuExpanded = false
                             }) {
                                 Text(text = it.first)
@@ -63,8 +64,8 @@ fun Sources(newsManager: NewsManager) {
             }
         )
     }) {
-        newsManager.getArticlesBySource()
-        val articles = newsManager.getArticleBySource.value
+        viewModel.getArticleBySource()
+        val articles = viewModel.getArticleBySource.collectAsState().value
         SourceContent(articles = articles.articles ?: listOf())
     }
 }

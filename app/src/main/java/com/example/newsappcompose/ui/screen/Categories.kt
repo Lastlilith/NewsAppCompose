@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -23,11 +24,11 @@ import com.example.newsappcompose.MockData.getTimeAgo
 import com.example.newsappcompose.R
 import com.example.newsappcompose.models.TopNewsArticle
 import com.example.newsappcompose.models.getAllArticleCategories
-import com.example.newsappcompose.network.NewsManager
+import com.example.newsappcompose.ui.MainViewModel
 import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager) {
+fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel) {
     val tabItems = getAllArticleCategories()
     Column {
         LazyRow {
@@ -35,11 +36,13 @@ fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager)
                 val category = tabItems[it]
                 CategoryTab(
                     category = category.categoryName, onFetchCategory = onFetchCategory,
-                    isSelected = newsManager.selectedCategory.value == category
+                    isSelected = viewModel.selectedCategory.collectAsState().value == category
                 )
             }
         }
-        ArticleContent(articles = newsManager.getArticleByCategory.value.articles ?: listOf())
+        ArticleContent(
+            articles = viewModel.getArticleByCategory.collectAsState().value.articles ?: listOf()
+        )
     }
 }
 
